@@ -37,7 +37,7 @@ def turn(who):
 def checkForWin(gamefield, who):
     #horizontal
     for row in gamefield:
-        if (row[0] == who and row[1] == who and row[2] == who and row[3] == who or row[3] == who and row[4] == who and row[5] == who and row[6] == who):
+        if (row[0] == who and row[1] == who and row[2] == who and row[3] == who or row[3] == who and row[4] == who and row[5] == who and row[6] == who or row[1] == who and row[2] == who and row[3] == who and row[4] == who or row[2] == who and row[3] == who and row[4] == who and row[5] == who):
             print(who + " won the game!")
             return True
     
@@ -104,4 +104,4 @@ while True:
             win = True
             break
         turn(enemy)
-   
+    
