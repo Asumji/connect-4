@@ -1,6 +1,8 @@
 #config
 player = "\x1b[32mO\x1b[0m"
 enemy = "\x1b[31mO\x1b[0m"
+length = 7
+height = 6
 
 
 def buildField(gamefield):
@@ -16,82 +18,95 @@ def turn(who):
     while turnActive == True:
         i = input("Where would you like to place your " + who + "? ")
         if (i.isnumeric()):
-            if (int(i) <= 7 and int(i) >= 0):
+            if (int(i) <= length and int(i) >= 0):
                 if (field[0][int(i) - 1] == "_"):
-                    for j in range(6):
+                    for j in range(height):
                         row = field[j]
                         if (row[int(i) - 1] != "_"):
                             field[j - 1][int(i) - 1] = who
                             turnActive = False
                             break
-                        elif (j == 5):
+                        elif (j == height - 1):
                             row[int(i) - 1] = who 
                             turnActive = False
                 else:
                     print("That column is full!")
             else:
-                print("Enter a number 1 - 7.")
+                print("Enter a number 1 - " + str(length) + ".")
         else:
-            print("Enter a number 1 - 7.")
+            print("Enter a valid number.")
 
 def checkForWin(gamefield, who):
-    #horizontal
+    # horizontal
     for row in gamefield:
-        if (row[0] == who and row[1] == who and row[2] == who and row[3] == who or row[3] == who and row[4] == who and row[5] == who and row[6] == who or row[1] == who and row[2] == who and row[3] == who and row[4] == who or row[2] == who and row[3] == who and row[4] == who and row[5] == who):
-            print(who + " won the game!")
-            return True
-    
+        array = []
+        for spot in row:
+            if (spot != "_"):
+                if (len(array) == 0):
+                    array.append(spot)
+                elif (spot == array[len(array) - 1]):
+                    array.append(spot)
+                else:
+                    array = [spot]
+
+                if (len(array) >= 4):
+                    print(who + " won the game!")
+                    return True
+            else:
+                array = []  
+
     #vertical
-    for column in range(6):
-        array = ["","","","","",""]
-        for j in range(6):
-            if (field[j][column] != "_"):
-                array[j] = field[j][column]
-        if (array[1] == who and array[2] == who and array[3] == who and array[4] == who or array[0] == who and array[1] == who and array[2] == who and array[3] == who or array[5] == who and array[4] == who and array[3] == who and array[2] == who):
-            print(who + " won the game!")
-            return True
+    for column in range(length):
+        array = []
+        for row in range(height):
+            spot = field[height - 1 - row][column]
+            if (spot != "_"):
+                if (len(array) == 0):
+                    array.append(spot)
+                elif (spot == array[len(array) - 1]):
+                    array.append(spot)
+                else:
+                    array = [spot]
+
+                if (len(array) >= 4):
+                    print(who + " won the game!")
+                    return True
+                    break    
+            else:
+                array = []
 
     #diagonal
-    array = []
-    array2 = []
-    count = 0
-    for row in range(6):
-        for spot in range(7):
-            count += 1 
-            if (len(gamefield) * 7 >= count + 21):
-                array.append(gamefield[row][spot])
+    for column in range(length):
+        array = []
+        if (column <= length - 4):
+            for row in range(height):
+                spot = field[height - 1 - row][column + len(array)]
+                if (spot != "_"):
+                    if (len(array) == 0):
+                        array.append(spot)
+                    elif (spot == array[len(array) - 1]):
+                        array.append(spot)
+                    else:
+                        array = [spot]
 
-    for row in gamefield:
-        for spot in row:
-            array2.append(spot)    
-
-    rowSpot = -1
-    for spot in range(len(array)):
-        rowSpot += 1
-
-        if (rowSpot <= 3):
-            if (array2[spot] == who and array2[spot + 8] == who and array2[spot + 16] == who and array2[spot + 24] == who):
-                print(who + " won the game!")
-                return True
-        if (rowSpot >= 3):
-            if (array2[spot] == who and array2[spot + 6] == who and array2[spot + 12] == who and array2[spot + 18] == who):
-                print(who + " won the game!")
-                return True
-        if (rowSpot == 6):
-            rowSpot = -1
+                    if (len(array) >= 4):
+                        print(who + " won the game!")
+                        return True
+                        break
+                else:
+                    array = []
     
 
 while True:
     win = False
 
-    field = [
-        ["_","_","_","_","_","_","_"],
-        ["_","_","_","_","_","_","_"],
-        ["_","_","_","_","_","_","_"],
-        ["_","_","_","_","_","_","_"],
-        ["_","_","_","_","_","_","_"],
-        ["_","_","_","_","_","_","_"],
-    ]
+    field = []
+    for i in range(height):
+        field.append(["_"]*length)
+
+    if (height < 4 and length < 4):
+        print("The field is smaller than a 4x4 making the game impossible.")
+        break
 
     while win == False:
         buildField(field)
@@ -104,4 +119,3 @@ while True:
             win = True
             break
         turn(enemy)
-    
