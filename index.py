@@ -37,6 +37,16 @@ def turn(who):
             print("Enter a valid number.")
 
 def checkForWin(gamefield, who):
+
+    #checkDraw
+    draw = True
+    for row in gamefield:
+        if (row.__contains__("_")):
+            draw = False
+    if (draw == True):
+        print("Draw!")
+        return True
+
     # horizontal
     for row in gamefield:
         array = []
